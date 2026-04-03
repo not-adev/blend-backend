@@ -1,0 +1,29 @@
+import { getAuth } from "@clerk/express";
+import { User } from "../schema/shema.user";
+
+export async function getUserIdUsingGetAuth(req) {
+
+  const { userId } = getAuth(req);
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const user = await User.findOne({ clerkId: userId });
+
+  return user;
+
+}
+
+
+
+export async function getUserIdUsingClearkId(clearId) {
+  if (!clearId) {
+    throw new Error("Unauthorized");
+  }
+
+  const user = await User.findOne({ clerkId: clearId });
+
+  return user;
+
+}
