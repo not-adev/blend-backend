@@ -1,4 +1,4 @@
-import { getUserIdUsingClearkId } from "../../utils/getUserId";
+import { getUserIdUsingClearkId } from "../../utils/getUserId.js";
 import { verifyToken } from "@clerk/express";
 import cookie from 'cookie'
 export async function socketCookieParser(socket, next) {

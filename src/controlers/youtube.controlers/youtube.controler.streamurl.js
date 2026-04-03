@@ -1,13 +1,13 @@
 import * as youtubeStreamUrlService from '../../services/youtube/youtube.service.streamurl.js'
 
-export const getStreamurl = async (req, res) => {
+export const getStreamUrl = async (req, res) => {
 
     try {
         const vidId = req.params.id
         const serviceCall = await youtubeStreamUrlService.StreamUrl(vidId)
         res.status(200).json({
             success: true,
-            data: serviceCall.items
+            data: serviceCall.StreamUrl
         })
 
     } catch (error) {

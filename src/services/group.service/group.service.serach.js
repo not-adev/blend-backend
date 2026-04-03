@@ -1,4 +1,4 @@
-import { Group } from "../../schema/shema.group";
+import { Group } from "../../schema/shema.group.js";
 
 export async function searchByMode(mode) {
     try {

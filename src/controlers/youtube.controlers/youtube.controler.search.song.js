@@ -2,6 +2,11 @@ import * as youtubeSearchService from '../../services/youtube/youtube.service.se
 export const search = async (req, res) => {
     try {
         const { keyword } = req.query
+        if (!keyword) {
+            const error = new Error('keyword is required ')
+            error.status = 400
+            throw error
+        }
         const serviceCall = await youtubeSearchService.search(keyword)
         res.status(200).json({
             success: true,
@@ -41,9 +46,14 @@ export const getTrendingSongs = async (req, res) => {
 
 export const getGeners = async (req, res) => {
     try {
-       
-        const generKeyword = req.params.generKeyword        
-        const serviceCall = await youtubeSearchService.Geners(generKeyword)
+        const generKeyword = req.params.generKeyword
+
+        if (!generKeyword) {
+             const error = new Error('not a valid gener')
+            error.status = 400
+            throw error
+        }
+        const serviceCall = await youtubeSearchService.getGeners(generKeyword)
         res.status(200).json({
             success: true,
             data: serviceCall.data

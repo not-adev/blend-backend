@@ -3,7 +3,7 @@ import * as groupService from '../../services/group.service/group.service.serach
 export const groupSearchbyMode = async (req, res) => {
     try {
         const mode = req.params.mode
-        if (mode.length === 0) {
+        if (!mode) {
             const error = new Error('mode is requierd for group search')
             error.status = 400
             throw error
@@ -28,7 +28,7 @@ export const groupSearchbyMode = async (req, res) => {
 export const groupSearchbyName = async (req, res) => {
     try {
         const name = req.params.name
-        if (name.length === 0) {
+        if (!name) {
             const error = new Error('mode is requierd for group search')
             error.status = 400
             throw error

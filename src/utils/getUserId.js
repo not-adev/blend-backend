@@ -1,5 +1,5 @@
 import { getAuth } from "@clerk/express";
-import { User } from "../schema/shema.user";
+import { User } from "../schema/shema.user.js";
 
 export async function getUserIdUsingGetAuth(req) {
 

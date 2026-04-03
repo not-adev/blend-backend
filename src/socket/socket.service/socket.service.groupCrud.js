@@ -1,6 +1,6 @@
-import { Session } from "../../schema/schema.session";
-import { Group } from '../../schema/shema.group'
-import { User } from '../../schema/shema.user'
+import { Session } from "../../schema/schema.session.js";
+import { Group } from '../../schema/shema.group.js'
+import { User } from '../../schema/shema.user.js'
 
 export async function createRoom(groupId) {
     try {

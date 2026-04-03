@@ -17,12 +17,16 @@ const server = http.createServer(app)
 const io = new Server(server)
 app.use(clerkMiddleware())
 app.use(express.json())
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path} - ${new Date().toISOString()}`);
+  next(); // Passes control to the next middleware or route
+});
 await connectToDb()
 SocketHanlder(io)
-app.use('/search' , youtubeSearchRoutes())
-app.use('/stream' , youtubeStreamUrl())
-app.use('/groupSearch' , groupSearchRoutes())
-app.use('/groupCrud' , groupCreateRoutes())
+app.use('/search' , youtubeSearchRoutes)
+app.use('/stream' , youtubeStreamUrl)
+app.use('/groupSearch' , groupSearchRoutes)
+app.use('/groupCrud' , groupCreateRoutes)
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
