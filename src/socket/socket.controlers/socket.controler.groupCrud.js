@@ -14,7 +14,8 @@ export async function createRoom(io, socket, data) {
         socket.join(room._id.toString());
         socket.data.admin = true
         socket.sessionId = room._id.toString()
-        socket.emit("room:created", room);
+        socket.data.groupId = groupId.toString()
+        socket.emit("room:created", room); s
     } catch (error) {
         socket.emit("error", {
             message: error.message,
@@ -52,7 +53,7 @@ export async function joinRoom(io, socket, data) {
         // updated socket data 
         socket.data.admin = false
         socket.sessionId = room._id.toString()
-
+        socket.data.groupId = groupId.toString()
         // emit to user 
         socket.emit("room:joined", room);
     } catch (error) {
@@ -82,7 +83,7 @@ export async function leaveRoom(io, socket, data) {
 
 
             // notify everyone in room
-            io.to(roomId).emit("room:deleted", {
+            io.to(sessionId).emit("room:deleted", {
                 message: "Room deleted by admin"
             });
 
@@ -90,15 +91,16 @@ export async function leaveRoom(io, socket, data) {
             const sockets = await io.in(sessionId).fetchSockets();
 
             sockets.forEach(s => {
-                s.leave(roomId);
-                s.data.roomId = null;
+                s.leave(sessionId);
+                s.data.sessionId = null;
+                s.data.groupId = null;
             });
 
         }
         // If normal user → leave room
         else {
 
-            socket.leave(roomId);
+            socket.leave(sessionId);
 
             socket.emit("room:left", {
                 message: "You left the room"
@@ -107,16 +109,17 @@ export async function leaveRoom(io, socket, data) {
             // notify others
             const serviceCall = await roomService.leaveRoom(socket.data.mongoId)
 
-            socket.to(roomId).emit("user:left", {
+            socket.to(sessionId).emit("user:left", {
                 userId: socket.data.mongoId,
-                username : serviceCall.username
+                username: serviceCall.username
             });
 
         }
 
         // cleanup socket data
-        socket.data.roomId = null;
+        socket.data.sessionId = null;
         socket.data.admin = false;
+        socket.data.groupId = null;
 
     } catch (error) {
 

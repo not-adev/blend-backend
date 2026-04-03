@@ -1,8 +1,8 @@
 import { execFile } from "child_process";
 
 export async function StreamUrl(videoID) {
-    const url = `${process.env.YOU_TUBE_WATCH_URL}&v=${videoID}`;
     try {
+        const url = `${process.env.YOU_TUBE_WATCH_URL}&v=${videoID}`;
         return new Promise((resolve, reject) => {
             execFile("yt-dlp", ["-f", "bestaudio", "-g", url], (err, stdout) => {
                 if (err) {
@@ -12,12 +12,12 @@ export async function StreamUrl(videoID) {
                 }
                 const streamUrl = stdout.trim();
                 console.log("Safe Audio URL:", streamUrl);
-                resolve({ StreamUrl: streamUrl }); // resolve the promise
+                resolve({ streamUrl: streamUrl }); // resolve the promise
             });
         });
 
     } catch (error) {
-        throw error ;
+        throw error;
     }
 
 }

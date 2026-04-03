@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 
 const queueSchema = new mongoose.Schema(
 {
-  group: {
+  sessionId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Group",
+    ref: "Session",
     required: true
   },
 

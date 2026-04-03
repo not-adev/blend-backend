@@ -1,5 +1,5 @@
 import * as roomController from './socket.controlers/socket.controler.groupCrud.js'
-
+import * as songController from './socket.controlers/socket.controler.song.js'
 export default function registerSocketHandlers(io, socket) {
 
   socket.on("room:create",async (data) =>
@@ -17,5 +17,7 @@ export default function registerSocketHandlers(io, socket) {
   socket.on("song:add" , async(data)=>{
     await songController.addSong(io,socket,data)
   })
+
+  
   
 }

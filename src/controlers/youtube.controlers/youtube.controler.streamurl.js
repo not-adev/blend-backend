@@ -7,7 +7,7 @@ export const getStreamUrl = async (req, res) => {
         const serviceCall = await youtubeStreamUrlService.StreamUrl(vidId)
         res.status(200).json({
             success: true,
-            data: serviceCall.StreamUrl
+            data: serviceCall.streamUrl
         })
 
     } catch (error) {
