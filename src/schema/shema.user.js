@@ -13,13 +13,8 @@ const userSchema = new mongoose.Schema(
     required: true
   },
 
-  recentSongs :[{
-    type : mongoose.Schema.Types.ObjectId , 
-    ref : "RecentSongs"
-  }],
-
-  avatar: {
-    type: String
+  recentSongs :{
+    type :[String]
   },
 
   groups: [{

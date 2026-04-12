@@ -10,6 +10,7 @@ import { youtubeStreamUrl } from './src/routes/youtube/youtube.streamurl.js';
 import { groupSearchRoutes } from './src/routes/group/group.search.js';
 import {groupCreateRoutes} from './src/routes/group/group.create.js'
 import { groupJoinRoutes } from './src/routes/group/group.join.js';
+import { userAuthRouter } from './src/routes/user/userAuth.js';
 const app = express()
 const port = 3000
 
@@ -24,6 +25,7 @@ app.use((req, res, next) => {
 });
 await connectToDb()
 SocketHanlder(io)
+app.use('/syncUser' , userAuthRouter)
 app.use('/search' , youtubeSearchRoutes)
 app.use('/stream' , youtubeStreamUrl)
 app.use('/groupSearch' , groupSearchRoutes)
