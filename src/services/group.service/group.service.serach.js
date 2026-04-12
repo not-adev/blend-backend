@@ -24,7 +24,7 @@ export async function searchByName(name) {
         const data = await Group.find({ Name: name })
         if (data.length === 0) {
             const error = new Error('No group with matching name')
-            error.status = 200
+            error.status = 404
             throw error
         }
         return {

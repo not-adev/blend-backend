@@ -3,7 +3,8 @@ import * as gropuControlers from '../../controlers/group.controler/group.control
 export const groupSearchRoutes = Router()
 groupSearchRoutes.get('/:mode' , gropuControlers.groupSearchbyMode)
 groupSearchRoutes.get('/:name' , gropuControlers.groupSearchbyName)
-groupSearchRoutes.get('/' , gropuControlers.groupSearchbyMember)
+groupSearchRoutes.get('/' , gropuControlers.groupSearchbyMember) // loda lasson h ye 
+// groupSearchRoutes.get('/' , gropuControlers.groupSearchbyStatus) // need to work 
 
 
 

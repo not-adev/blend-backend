@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 const sessionSchema = new mongoose.Schema(
@@ -15,14 +16,22 @@ const sessionSchema = new mongoose.Schema(
       streamUrl: String,
       thumbnail: String
     },
+    
 
     queue: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "Queue",
     }],
 
-  startedAt: {
+    startedAt: {
       type: Date
+    },
+    duration: {
+      type: Number
+    },
+
+    currentIndex: {
+      type: Number,
     },
 
     paused: {
