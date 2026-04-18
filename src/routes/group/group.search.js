@@ -4,7 +4,7 @@ export const groupSearchRoutes = Router()
 groupSearchRoutes.get('/:mode' , gropuControlers.groupSearchbyMode)
 groupSearchRoutes.get('/:name' , gropuControlers.groupSearchbyName)
 groupSearchRoutes.get('/' , gropuControlers.groupSearchbyMember) // loda lasson h ye 
-// groupSearchRoutes.get('/' , gropuControlers.groupSearchbyStatus) // need to work 
+groupSearchRoutes.get('/' , gropuControlers.searchGroupByStatus) // need to work 
 
 
 

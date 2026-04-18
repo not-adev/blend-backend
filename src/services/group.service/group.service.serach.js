@@ -81,6 +81,34 @@ export async function searchByMember() {
 
 
 
+export const searchByStatus = async ({ status, skip, limit }) => {
+    try {
+        // Filter
+
+        // Fetch paginated data
+        const data = await Group.find({live : true})
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 }); // optional but recommended
+
+        // Get total count (without pagination)
+        const total = await Group.countDocuments({live : true });
+
+        return {
+            data,
+            total,
+        };
+
+    } catch (error) {
+        throw {
+            status: 500,
+            message: error.message || "Service Error",
+        };
+    }
+};
+
+
+
 
 
 

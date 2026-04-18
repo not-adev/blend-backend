@@ -71,3 +71,43 @@ export const groupSearchbyMember = async (req, res) => {
 
     }
 }
+
+
+
+export const searchGroupByStatus = async (req, res) => {
+    try {
+        const {page = 1, limit = 10 } = req.query;
+
+       
+        // Convert to numbers
+        const pageNumber = parseInt(page);
+        const limitNumber = parseInt(limit);
+
+        const skip = (pageNumber - 1) * limitNumber;
+
+        // Call service with pagination
+        const serviceCall = await groupService.searchByStatus({
+            skip,
+            limit: limitNumber,
+        });
+
+        res.status(200).json({
+            success: true,
+            data: serviceCall.data,
+            pagination: {
+                currentPage: pageNumber,
+                totalPages: Math.ceil(serviceCall.total / limitNumber),
+                totalItems: serviceCall.total,
+                limit: limitNumber,
+            },
+        });
+
+    } catch (error) {
+        const statusCode = error.status || 500;
+
+        return res.status(statusCode).json({
+            success: false,
+            message: error.message || "Internal Server Error",
+        });
+    }
+};
