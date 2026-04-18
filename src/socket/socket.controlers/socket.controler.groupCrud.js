@@ -13,9 +13,9 @@ export async function createRoom(io, socket, data) {
         const room = await roomService.createRoom(groupId);
         socket.join(room._id.toString());
         socket.data.admin = true
-        socket.sessionId = room._id.toString()
+        socket.data.sessionId = room._id.toString()
         socket.data.groupId = groupId.toString()
-        socket.emit("room:created", room); s
+        io.to(groupId).emit('room:added' , room)
     } catch (error) {
         socket.emit("error", {
             message: error.message,
@@ -52,7 +52,7 @@ export async function joinRoom(io, socket, data) {
 
         // updated socket data 
         socket.data.admin = false
-        socket.sessionId = room._id.toString()
+        socket.data.sessionId = room._id.toString()
         socket.data.groupId = groupId.toString()
         // emit to user 
         socket.emit("room:joined", room);

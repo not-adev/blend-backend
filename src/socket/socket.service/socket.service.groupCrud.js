@@ -29,7 +29,10 @@ export async function createRoom(groupId) {
 
         await groupData.save()
 
-        return session;
+        return {
+            group: groupData,
+            session: session
+        }
 
     } catch (error) {
         throw error;
