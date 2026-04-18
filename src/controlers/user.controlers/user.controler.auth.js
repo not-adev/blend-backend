@@ -3,7 +3,7 @@ export const syncUserControler = async (req, res) => {
 
 
     try {
-        const clerkId = req.auth.userId;
+        const clerkId = req.userId;
         const { userName } = req.body
 
         if (!clerkId || !userName) {

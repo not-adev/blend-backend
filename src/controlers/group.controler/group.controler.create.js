@@ -9,7 +9,7 @@ export async function groupCreateControler(req, res) {
             error.status = 400
             throw error
         }
-        const { userId } = getAuth(req);
+        const { userId } = req.userId;
         if (!userId) {
             const error = new Error('User not logged in')
             error.status = 400

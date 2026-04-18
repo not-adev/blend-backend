@@ -3,7 +3,8 @@ import { addUserToGroup } from "../../services/group.service/group.service.joinG
 import { addPendingRequest } from "../../services/group.service/group.service.joinGroup.js";
 export async function groupJoinControler(req, res) {
     try {
-        const { groupId, userId } = req.body.groupId
+        const { groupId } = req.body
+        const userId = req.userId
         // Fetch only the required field
         const group = await Group.findById(groupId).select("publicPrivate");
 
