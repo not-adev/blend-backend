@@ -46,14 +46,14 @@ export const getTrendingSongs = async (req, res) => {
 
 export const getGeners = async (req, res) => {
     try {
-        const generKeyword = req.params.generKeyword
+        const {gener} = req.params
 
-        if (!generKeyword) {
+        if (!gener) {
              const error = new Error('not a valid gener')
             error.status = 400
             throw error
         }
-        const serviceCall = await youtubeSearchService.getGeners(generKeyword)
+        const serviceCall = await youtubeSearchService.getGeners(gener)
         res.status(200).json({
             success: true,
             data: serviceCall.data

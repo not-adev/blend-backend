@@ -3,4 +3,4 @@ import * as youtubeControler from '../../controlers/youtube.controlers/youtube.c
 export const youtubeSearchRoutes = Router()
 youtubeSearchRoutes.get('/' , youtubeControler.search)
 youtubeSearchRoutes.get('/trending' , youtubeControler.getTrendingSongs)
-youtubeSearchRoutes.get('/gener/:generKeyword' , youtubeControler.getGeners)
+youtubeSearchRoutes.get('/gener/:gener' , youtubeControler.getGeners)
