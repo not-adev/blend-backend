@@ -23,7 +23,7 @@ export async function getUserIdUsingClearkId(clearId) {
   }
 
   const user = await User.findOne({ clerkId: clearId });
-
+  if (!user)  throw new Error("Unauthorized");
   return user;
 
 }

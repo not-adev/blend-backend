@@ -3,14 +3,13 @@ export const syncUserControler = async (req, res) => {
 
 
     try {
-        const clerkId = req.userId;
-        const { userName } = req.body
+        const { userName ,clerkId , email} = req.body
 
-        if (!clerkId || !userName) {
+        if (!clerkId || !userName || !email) {
             return res.status(401).json({ message: "Unauthorized" });
         }
 
-        const serviceCall = await userAuthService.syncUser(clerkId, userName)
+        const serviceCall = await userAuthService.syncUser(clerkId, userName , email)
         res.status(201).json({
             message: "User created successfully",
             data : serviceCall.user,
