@@ -1,10 +1,26 @@
-export const getUserId = (req, res, next) => {
-  const userId = req.auth?.userId;
+import { verifyToken } from "@clerk/backend";
 
-  if (!userId) {
-    return res.status(401).json({ message: "Unauthorized" });
+export const getUserId = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader?.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    const payload = await verifyToken(token, {
+      secretKey: process.env.CLERK_SECRET_KEY,
+    });
+
+
+    req.userId = payload.sub;
+    console.log(req.userId)
+
+    next();
+  } catch (err) {
+    console.error("Verify Token Error:", err);
+    return res.status(401).json({ message: "Invalid token" });
   }
-
-  req.userId = userId; 
-  next();
 };

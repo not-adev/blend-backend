@@ -22,7 +22,10 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-app.use(cors())
+app.use(cors({
+  origin: "http://localhost:5173", // your frontend URL
+  credentials: true,
+}));
 app.use(clerkMiddleware())
 app.use(express.json())
 app.use((req, res, next) => {

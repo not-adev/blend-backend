@@ -3,19 +3,15 @@ import { getAuth } from '@clerk/express';
 
 export async function groupCreateControler(req, res) {
     try {
-        const { name, mode } = req.body
-        if (!name || !mode) {
+        const { name, mode,isPrivate} = req.body
+       
+        if (!name || !mod ||  typeof isPrivate !== "boolean") {
             const error = new Error('Name and mode are required')
             error.status = 400
             throw error
         }
-        const { userId } = req.userId;
-        if (!userId) {
-            const error = new Error('User not logged in')
-            error.status = 400
-            throw error
-        }
-        const serviceCall = await groupCreateService.createGroup(name, userId, mode)
+        const userId  = req.userId;
+        const serviceCall = await groupCreateService.createGroup(name, userId, mode ,isPrivate)
         res.status(200).json({
             success: true,
             message: "Group added succefully",
