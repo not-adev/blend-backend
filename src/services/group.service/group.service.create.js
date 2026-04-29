@@ -2,7 +2,7 @@ import { Group } from "../../schema/shema.group.js";
 import { User } from '../../schema/shema.user.js'
 export async function createGroup(name, clerkId, mode, isPrivate) {
     try {
-        console.log(name, mode, isPrivate, clerkId)
+        
         const user = await User.findOne({ clerkId: clerkId })
         if (!user) {
             const error = new Error('User not verified')

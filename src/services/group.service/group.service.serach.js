@@ -21,12 +21,11 @@ export async function searchByMode(mode) {
 
 export async function searchByName(name) {
     try {
-        const data = await Group.find({ Name: name })
-        if (data.length === 0) {
-            const error = new Error('No group with matching name')
-            error.status = 404
-            throw error
-        }
+        console.log(name.length)
+        let data = await Group.find({
+            name: { $regex: name, $options: "i" }
+        });
+        console.log(data)
         return {
             data: data
         }
@@ -86,13 +85,13 @@ export const searchByStatus = async ({ status, skip, limit }) => {
         // Filter
 
         // Fetch paginated data
-        const data = await Group.find({live : true})
+        const data = await Group.find({ live: true })
             .skip(skip)
             .limit(limit)
             .sort({ createdAt: -1 }); // optional but recommended
 
         // Get total count (without pagination)
-        const total = await Group.countDocuments({live : true });
+        const total = await Group.countDocuments({ live: true });
 
         return {
             data,

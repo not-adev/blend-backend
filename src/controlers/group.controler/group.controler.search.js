@@ -44,6 +44,7 @@ export const groupSearchbyName = async (req, res) => {
     } catch (error) {
 
         const status = error.status || 500;
+        console.log(error)
         return res.status(status).json({
             success: false,
             message: error.message || "Internal Server Error"

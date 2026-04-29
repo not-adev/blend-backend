@@ -35,7 +35,8 @@ const groupSchema = new mongoose.Schema(
       default: "HOST"
     },
     live: {
-      type: Boolean
+      type: Boolean ,
+      default : false ,
     },
     sessionId: {
       type: mongoose.Schema.Types.ObjectId,
