@@ -1,41 +1,51 @@
+import mongoose from "mongoose";
 import { Group } from "../../schema/shema.group.js";
-import { User } from '../../schema/shema.user.js'
+import { User } from "../../schema/shema.user.js";
+
 export async function createGroup(name, clerkId, mode, isPrivate) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
     try {
-        
-        const user = await User.findOne({ clerkId: clerkId })
+        const user = await User.findOne({ clerkId }).session(session);
+
         if (!user) {
-            const error = new Error('User not verified')
-            error.status = 400
-            throw error
+            const error = new Error("User not verified");
+            error.status = 400;
+            throw error;
         }
-        console.log(user)
 
         if (user.mygroups.length >= 1) {
-
-            const error = new Error('One User Cant Have More Then One Group')
-            error.status = 400
-            throw error
+            const error = new Error("One User Cant Have More Than One Group");
+            error.status = 400;
+            throw error;
         }
-        const room = new Group({
-            name,
-            owner: user._id,
-            mode,
-            publicPrivate: isPrivate,
-        });
 
-        await room.save();
+        const room = await Group.create(
+            [
+                {
+                    name,
+                    owner: user._id,
+                    mode,
+                    publicPrivate: isPrivate,
+                    live: false,
+                },
+            ],
+            { session }
+        );
 
-        user.mygroups.push(room._id);
-        await user.save();
+        user.mygroups.push(room[0]._id);
+        await user.save({ session });
+
+        await session.commitTransaction();
 
         return {
-            data: room
+            data: room[0],
         };
-
-    } catch (error) {
-        console.error("Create Group Service Error:", error);
-        throw error;
+    } catch (err) {
+        await session.abortTransaction();
+        throw err;
+    } finally {
+        session.endSession();
     }
-
 }

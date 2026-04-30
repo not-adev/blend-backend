@@ -9,7 +9,7 @@ import { youtubeSearchRoutes } from './src/routes/youtube/youtube.search.js';
 import { SocketHanlder } from './src/socket/socket.index.js';
 import { youtubeStreamUrl } from './src/routes/youtube/youtube.streamurl.js';
 import { groupSearchRoutes } from './src/routes/group/group.search.js';
-import { groupCreateRoutes } from './src/routes/group/group.create.js'
+import { groupCrudRoutes } from './src/routes/group/group.create.js'
 import { groupJoinRoutes } from './src/routes/group/group.join.js';
 import { userAuthRouter } from './src/routes/user/userAuth.js';
 const app = express()
@@ -38,7 +38,7 @@ app.use('/syncUser', userAuthRouter)
 app.use('/search', youtubeSearchRoutes)
 app.use('/stream', youtubeStreamUrl)
 app.use('/group/search', groupSearchRoutes)
-app.use('/groupCrud', groupCreateRoutes)
+app.use('/groupCrud', groupCrudRoutes)
 app.use('/group/join', groupJoinRoutes)
 app.get('/', (req, res) => {
   res.send('Hello World!')
