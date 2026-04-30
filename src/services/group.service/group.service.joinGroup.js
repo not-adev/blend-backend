@@ -3,66 +3,116 @@ import { Group } from "../../schema/shema.group.js";
 import { User } from "../../schema/shema.user.js";
 export async function addUserToGroup(groupId, userId) {
     const session = await mongoose.startSession();
+    console.log("adding to group ")
 
     try {
         session.startTransaction();
 
-        // Add user to group members
+        // Check if group exists
+        const group = await Group.findById(groupId).session(session);
+        if (!group) throw new Error("Group not found");
+
+        // Check if user exists
+        const user = await User.findOne({ clerkId: userId }).session(session);
+        if (!user) throw new Error("User not found");
+        // chcek if adim
+        if (user._id === group.owner) {
+            return {
+                success: true,
+                message: "Admin is already a part of group ",
+                groupId,
+                userId,
+            };
+        }
+        // Add user to group
         await Group.findByIdAndUpdate(
             groupId,
-            { $addToSet: { members: userId } }, // prevents duplicates
+            { $addToSet: { members: user._id } },
             { session }
         );
 
-        // Add group to user's groups
-        await User.findByIdAndUpdate(
-            userId,
-            { $addToSet: { groups: groupId } }, // prevents duplicates
+        // Add group to user
+        await User.findOneAndUpdate({
+            clerkId: userId
+        },
+            { $addToSet: { groups: groupId } },
             { session }
         );
 
         await session.commitTransaction();
-        return {
-            succes: true,
-        }
-    } catch (error) {
-        console.error("Error adding user:", error.message);
-        throw error
-    }
-    finally {
-        session.endSession();
 
+        return {
+            success: true,
+            message: "User added to group",
+            groupId,
+            userId,
+        };
+
+    } catch (error) {
+        await session.abortTransaction();
+        console.error("Error adding user:", error.message);
+
+        return {
+            success: false,
+            message: error.message,
+        };
+
+    } finally {
+        session.endSession();
     }
 }
 
-
 export const addPendingRequest = async (groupId, userId) => {
     try {
-        const updatedGroup = await Group.findByIdAndUpdate(
-            groupId,
-            {
-                $addToSet: { requests: userId } // prevents duplicate requests
-            },
-            {
-                new: true, // returns updated document
-                runValidators: true
-            }
-        );
+        console.log("request to add in group");
 
-        if (!updatedGroup) {
-            throw new Error("Group not found");
+        // Check group
+        const group = await Group.findById(groupId);
+        if (!group) throw new Error("Group not found");
+        const user = await User.findOne({ clerkId: userId }).session(session);
+
+        // check if admin 
+        if (user._id === group.owner) {
+            return {
+                success: true,
+                message: "Admin is already a part of group ",
+                groupId,
+                userId,
+            };
         }
 
-        console.log("Request added successfully");
+        // ❗ Already a member
+        if (group.members.includes(user._id)) {
+            return {
+                success: false,
+                message: "User already in group",
+            };
+        }
+
+        // ❗ Already requested
+        if (group.requests.includes(user._id)) {
+            return {
+                success: false,
+                message: "Request already sent",
+            };
+        }
+
+        // Add request
+        group.requests.push(user._id);
+        await group.save();
 
         return {
-            message : true 
-
+            success: true,
+            message: "Request sent successfully",
         };
 
     } catch (error) {
         console.error("Error adding request:", error.message);
-        throw error 
+
+        return {
+            success: false,
+            message: error.message,
+        };
     }
 };
 

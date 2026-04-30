@@ -37,7 +37,7 @@ SocketHanlder(io)
 app.use('/syncUser', userAuthRouter)
 app.use('/search', youtubeSearchRoutes)
 app.use('/stream', youtubeStreamUrl)
-app.use('/groupSearch', groupSearchRoutes)
+app.use('/group/search', groupSearchRoutes)
 app.use('/groupCrud', groupCreateRoutes)
 app.use('/group/join', groupJoinRoutes)
 app.get('/', (req, res) => {

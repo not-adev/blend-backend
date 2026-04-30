@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema(
     groups: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "Group"
+    }],
+    mygroups: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Group"
     }]
   },
 

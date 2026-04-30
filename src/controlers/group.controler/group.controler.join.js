@@ -13,7 +13,7 @@ export async function groupJoinControler(req, res) {
         }
         let serviceCall;
         // Check the field
-        if (group.publicPrivate === true) {
+        if (group.publicPrivate === false) {
             serviceCall = await addUserToGroup(groupId, userId);
         } else {
             serviceCall = await addPendingRequest(groupId, userId);

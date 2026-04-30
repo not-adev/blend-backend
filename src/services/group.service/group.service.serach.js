@@ -21,15 +21,15 @@ export async function searchByMode(mode) {
 
 export async function searchByName(name) {
     try {
-        console.log(name.length)
+
         let data = await Group.find({
             name: { $regex: name, $options: "i" }
         });
-        console.log(data)
         return {
             data: data
         }
     } catch (error) {
+        
         throw error;
     }
 

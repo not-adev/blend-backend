@@ -11,7 +11,7 @@ export async function createGroup(name, clerkId, mode, isPrivate) {
         }
         console.log(user)
 
-        if (user.groups.length >= 1) {
+        if (user.mygroups.length >= 1) {
 
             const error = new Error('One User Cant Have More Then One Group')
             error.status = 400
@@ -26,7 +26,7 @@ export async function createGroup(name, clerkId, mode, isPrivate) {
 
         await room.save();
 
-        user.groups.push(room._id);
+        user.mygroups.push(room._id);
         await user.save();
 
         return {
