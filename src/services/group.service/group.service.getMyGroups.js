@@ -19,3 +19,24 @@ export async function getMyGroups(userId) {
         throw error;
     }
 }
+
+
+export async function getOWnedGroups(userId) {
+    try {
+        const user = await User.findOne({ clerkId: userId })
+            .populate("mygroups");
+
+        if (!user) {
+            const error = new Error("User not found");
+            error.status = 404;
+            throw error;
+        }
+
+        return {
+            data: user.mygroups
+        };
+
+    } catch (error) {
+        throw error;
+    }
+}

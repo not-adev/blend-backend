@@ -4,6 +4,8 @@ import * as groupControler from '../../controlers/group.controler/group.controle
 export const groupCrudRoutes = Router()
 groupCrudRoutes.post('/create' ,getUserId ,groupControler.groupCreateControler)
 groupCrudRoutes.get('/getGroups' ,getUserId ,groupControler.groupGetMyGroupsControler)
+groupCrudRoutes.get('/getOwedGruops' ,getUserId ,groupControler.groupGetOwnedGroupsControler)
+
 
 
 

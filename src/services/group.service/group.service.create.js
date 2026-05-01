@@ -3,6 +3,7 @@ import { Group } from "../../schema/shema.group.js";
 import { User } from "../../schema/shema.user.js";
 
 export async function createGroup(name, clerkId, mode, isPrivate) {
+    console.log('hiihihi')
     const session = await mongoose.startSession();
     session.startTransaction();
 

@@ -20,7 +20,7 @@ export async function groupJoinControler(req, res) {
         }
         res.status(201).json({
             success: true,
-            data: serviceCall.data,
+            data: serviceCall,
         })
 
     } catch (error) {

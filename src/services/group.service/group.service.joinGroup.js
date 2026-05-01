@@ -52,10 +52,7 @@ export async function addUserToGroup(groupId, userId) {
         await session.abortTransaction();
         console.error("Error adding user:", error.message);
 
-        return {
-            success: false,
-            message: error.message,
-        };
+        throw error;
 
     } finally {
         session.endSession();
@@ -63,56 +60,61 @@ export async function addUserToGroup(groupId, userId) {
 }
 
 export const addPendingRequest = async (groupId, userId) => {
+    const session = await mongoose.startSession();
+
     try {
-        console.log("request to add in group");
+        session.startTransaction();
 
-        // Check group
-        const group = await Group.findById(groupId);
+        const group = await Group.findById(groupId).session(session);
         if (!group) throw new Error("Group not found");
-        const user = await User.findOne({ clerkId: userId }).session(session);
 
-        // check if admin 
-        if (user._id === group.owner) {
+        const user = await User.findOne({ clerkId: userId }).session(session);
+        if (!user) throw new Error("User not found");
+
+        // Admin already part of group
+        if (user._id.equals(group.owner)) {
+            console.log("admin ")
+            await session.commitTransaction();
+
             return {
                 success: true,
-                message: "Admin is already a part of group ",
-                groupId,
-                userId,
+                message: "Admin is already a part of group",
             };
         }
 
-        // ❗ Already a member
-        if (group.members.includes(user._id)) {
+        // Already member
+        if (group.members.some((id) => id.equals(user._id))) {
+            await session.commitTransaction();
+
             return {
                 success: false,
                 message: "User already in group",
             };
         }
 
-        // ❗ Already requested
-        if (group.requests.includes(user._id)) {
+        // Already requested
+        if (group.requests.some((id) => id.equals(user._id))) {
+            await session.commitTransaction();
+
             return {
                 success: false,
                 message: "Request already sent",
             };
         }
 
-        // Add request
         group.requests.push(user._id);
-        await group.save();
+        await group.save({ session });
+
+        await session.commitTransaction();
 
         return {
             success: true,
             message: "Request sent successfully",
         };
-
     } catch (error) {
-        console.error("Error adding request:", error.message);
-
-        return {
-            success: false,
-            message: error.message,
-        };
+        await session.abortTransaction();
+        throw error;
+    } finally {
+        session.endSession();
     }
 };
-
