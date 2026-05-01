@@ -1,14 +1,21 @@
 import { Session } from "../../schema/schema.session.js";
 import { Group } from '../../schema/shema.group.js'
 import { User } from '../../schema/shema.user.js'
-
+import mongoose from "mongoose";
 export async function createRoom(groupId) {
+    console.log("room creator called");
+
+    const dbSession = await mongoose.startSession();
+
     try {
-        const groupData = await Group.findById(groupId)
+        dbSession.startTransaction();
+
+        const groupData = await Group.findById(groupId).session(dbSession);
+
         if (!groupData) {
-            const error = new Error('No Group Found')
-            error.status = 400
-            throw error
+            const error = new Error("No Group Found");
+            error.status = 400;
+            throw error;
         }
 
         if (groupData.live) {
@@ -17,28 +24,36 @@ export async function createRoom(groupId) {
             throw error;
         }
 
+        const newSession = await Session.create(
+            [
+                {
+                    group: groupId,
+                    mode: groupData.mode,
+                },
+            ],
+            { session: dbSession }
+        );
 
-        const session = new Session({
-            group: groupId,
-            mode: groupData.mode
-        });
+        groupData.live = true;
+        groupData.sessionId = newSession[0]._id;
 
-        await session.save()
-        groupData.live = true
-        groupData.sessionId = session._id
+        await groupData.save({ session: dbSession });
 
-        await groupData.save()
+        await dbSession.commitTransaction();
 
         return {
             group: groupData,
-            session: session
-        }
+            session: newSession[0],
+        };
 
     } catch (error) {
+        console.log(error)
+        await dbSession.abortTransaction();
         throw error;
+
+    } finally {
+        await dbSession.endSession();
     }
-
-
 }
 
 
@@ -56,6 +71,7 @@ export async function joinRoom(sessionId) {
         return sessionData;
 
     } catch (error) {
+        console.log(error)
         throw error;
     }
 
@@ -64,37 +80,48 @@ export async function joinRoom(sessionId) {
 
 
 export async function deleteRoom(sessionId) {
+    console.log('db working ')
+    const dbSession = await mongoose.startSession();
 
-    const session = await Session.findById(sessionId);
+    try {
+        dbSession.startTransaction();
+        const session = await Session.findById(sessionId).session(dbSession);
 
-    if (!session) {
-        const error = new Error("Session not found");
-        error.status = 404
+        if (!session) {
+            const error = new Error("Session not found");
+            error.status = 404;
+            throw error;
+        }
+
+        const groupId = session.group;
+
+        await Session.findByIdAndDelete(sessionId).session(dbSession);
+
+        await Group.findByIdAndUpdate(
+            groupId,
+            {
+                $set: {
+                    live: false,
+                    sessionId: null,
+                },
+            },
+            { new: true, session: dbSession }
+        );
+
+        await dbSession.commitTransaction();
+        dbSession.endSession();
+
+        return {
+            message: "Session deleted and group updated",
+        };
+
+    } catch (error) {
+        console.log(error)
+        await dbSession.abortTransaction();
+        dbSession.endSession();
         throw error;
     }
-
-    const groupId = session.group;
-
-    // delete the session
-    await Session.findByIdAndDelete(sessionId);
-
-    // update the corresponding group
-    await Group.findByIdAndUpdate(
-        groupId,
-        {
-            $unset: { session: "" },  // remove session reference
-            $set: { live: false }
-        }, // remove live 
-        { new: true }
-    );
-
-    return {
-        message: "Session deleted and group updated"
-    };
 }
-
-
-
 export async function leaveRoom(userId) {
     if (!userId) {
         const error = new Error("UserId is required");

@@ -77,3 +77,73 @@ export async function groupGetOwnedGroupsControler(req, res) {
 
     }
 }
+
+
+export async function groupGoliveControler(req, res) {
+    try {
+        const { groupId, status } = req.query
+        console.log(groupId)
+        const serviceCall = await getGroupService.goLive(groupId, status)
+        res.status(200).json({
+            success: true,
+            message: "toggle done ",
+            data: serviceCall.data
+        })
+
+    } catch (error) {
+        const status = error.status || 500;
+        return res.status(status).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+
+    }
+}
+
+
+
+export async function groupRequestControler(req, res) {
+    try {
+        const { groupId } = req.query
+        console.log(groupId)
+        const serviceCall = await getGroupService.getRequest(groupId)
+        res.status(200).json({
+            success: true,
+            message: "Group Deleted succefully ",
+            data: serviceCall.data
+        })
+
+    } catch (error) {
+        const status = error.status || 500;
+        return res.status(status).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+
+    }
+}
+
+
+
+export async function groupDeleteControler(req, res) {
+    try {
+        const { groupId } = req.query
+        console.log(groupId)
+        const serviceCall = await getGroupService.deleteGroup(groupId)
+        res.status(200).json({
+            success: true,
+            message: "Group Deleted succefully ",
+            data: serviceCall.data
+        })
+
+    } catch (error) {
+        const status = error.status || 500;
+        return res.status(status).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+
+    }
+
+}
+

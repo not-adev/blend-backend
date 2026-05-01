@@ -3,7 +3,7 @@ import { socketCookieParser } from './socket.middleware/socket.clearkIdParser.js
 
 export function SocketHanlder(io) {
     io.use(socketCookieParser)
-    io.on('connection', (socket) => {
+    io.on('connection', (socket,data) => {
         console.log(`User connected: ${socket.id}`);
         registerSocketHandlers(io, socket)
     })
