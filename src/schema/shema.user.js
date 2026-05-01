@@ -13,9 +13,14 @@ const userSchema = new mongoose.Schema(
       required: true
     },
 
-    recentSongs: {
-      type: [String]
-    },
+    recentSongs: [
+      {
+        streamUrl: String,
+        title: String,
+        thumbnailUrl: String,
+        channelTitle: String,
+      }
+    ],
     email: {
       type: String,
       required: true

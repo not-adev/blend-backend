@@ -12,6 +12,7 @@ import { groupSearchRoutes } from './src/routes/group/group.search.js';
 import { groupCrudRoutes } from './src/routes/group/group.create.js'
 import { groupJoinRoutes } from './src/routes/group/group.join.js';
 import { userAuthRouter } from './src/routes/user/userAuth.js';
+import { recentSongsRoutes } from './src/routes/recentSongs/recentSong.js';
 const app = express()
 const port = 3000
 const server = http.createServer(app)
@@ -40,6 +41,8 @@ app.use('/stream', youtubeStreamUrl)
 app.use('/group/search', groupSearchRoutes)
 app.use('/groupCrud', groupCrudRoutes)
 app.use('/group/join', groupJoinRoutes)
+app.use('/recentSongs', recentSongsRoutes)
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
@@ -54,7 +57,6 @@ app.use((err, req, res, next) => {
     success: false,
     status,
     message,
-    // stack: process.env.NODE_ENV === 'development' ? err.stack : {}
   });
 });
 server.listen(port, () => {
