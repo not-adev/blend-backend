@@ -102,7 +102,7 @@ export async function groupGoliveControler(req, res) {
 
 
 
-export async function groupRequestControler(req, res) {
+export async function groupGetRequestControler(req, res) {
     try {
         const { groupId } = req.query
         console.log(groupId)
@@ -145,5 +145,51 @@ export async function groupDeleteControler(req, res) {
 
     }
 
+}
+
+
+
+
+export async function groupAcceptRequestControler(req, res) {
+    try {
+        const { groupId, userId } = req.query
+        console.log(userId, groupId)
+        const serviceCall = await getGroupService.acceptRequest(userId, groupId)
+        res.status(200).json({
+            success: true,
+            message: "Request accepted  ",
+            data: serviceCall.data
+        })
+
+    } catch (error) {
+        const status = error.status || 500;
+        return res.status(status).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+
+    }
+}
+
+
+export async function groupRejectRequestControler(req, res) {
+    try {
+        const { groupId, userId } = req.query
+        console.log(userId, groupId)
+        const serviceCall = await getGroupService.rejectRequest(userId, groupId)
+        res.status(200).json({
+            success: true,
+            message: "Request accepted  ",
+            data: serviceCall.data
+        })
+
+    } catch (error) {
+        const status = error.status || 500;
+        return res.status(status).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+
+    }
 }
 

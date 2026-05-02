@@ -7,5 +7,6 @@ groupCrudRoutes.get('/getGroups', getUserId, groupControler.groupGetMyGroupsCont
 groupCrudRoutes.get('/getOwedGruops', getUserId, groupControler.groupGetOwnedGroupsControler)
 groupCrudRoutes.patch('/goLive', getUserId, groupControler.groupGoliveControler)
 groupCrudRoutes.delete('/delete', getUserId, groupControler.groupDeleteControler)
-groupCrudRoutes.get('/getRequest', getUserId, groupControler.groupRequestControler)
-
+groupCrudRoutes.get('/getRequest', getUserId, groupControler.groupGetRequestControler)
+groupCrudRoutes.get('/acceptRequest', getUserId, groupControler.groupAcceptRequestControler)
+groupCrudRoutes.get('/rejectRequest', getUserId, groupControler.groupRejectRequestControler)
