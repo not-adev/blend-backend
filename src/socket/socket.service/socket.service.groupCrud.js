@@ -72,7 +72,7 @@ export async function createRoom(groupId) {
 }
 
 export async function joinRoom(sessionId, userId) {
-    const sessionData = await Session.findById(sessionId);
+    const sessionData = await Session.findById(sessionId).populate("queue");
 
     if (!sessionData) {
         throw new Error("No Active Room Found");
@@ -94,6 +94,7 @@ export async function joinRoom(sessionId, userId) {
 
     return {
         alreadyInSession: !updatedUser,
+        queue :  sessionData.queue ,
         sessionData
     };
 }
@@ -187,7 +188,8 @@ export async function leaveRoom(clerkId) {
     }
     const sessionId = user.currentSessionId
     const groupId = user.currentGroupId
-    const group = await Group.findById(user.currentGroupId);
+    console.log(groupId ,sessionId )
+    const group = await Group.findById(groupId);
 
     if (!group) {
         const error = new Error("Group not found");

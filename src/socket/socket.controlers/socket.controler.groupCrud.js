@@ -18,12 +18,14 @@ export async function createRoom(io, socket, data, callback) {
 
         callback({
             success: true,
+            data : serviceCall
         });
     } catch (error) {
         console.log(error)
         callback({
             success: false,
             message: error.message,
+            data : {}
         });
 
         socket.emit("error", {
@@ -72,14 +74,13 @@ export async function joinRoom(io, socket, data) {
 
 }
 
-export async function leaveRoom(io, socket,callback) {
+export async function leaveRoom(io, socket, callback) {
     try {
         const userId = socket.data.userId;
 
         const serviceCall = await roomService.leaveRoom(userId);
+        const { sessionId } = serviceCall;
 
-        const {sessionId , gorupId } = serviceCall;
-     
         if (serviceCall.remove === "All") {
             io.to(sessionId).emit("room:ended", {
                 message: "Room deleted by admin",
@@ -92,16 +93,30 @@ export async function leaveRoom(io, socket,callback) {
                 memberSocket.data.admin = false;
             }
 
+            callback({
+                success: true,
+                roomDeleted: true,
+            });
+
             return;
         }
 
         socket.leave(sessionId);
         socket.data.admin = false;
-        callback({succes : true})
+
+
+        if (typeof callback === "function") {
+            callback({ success: true });
+        }
+
 
     } catch (error) {
         console.log(error);
-        callback({succes: false} )
+
+
+        if (typeof callback === "function") {
+            callback({ success: false });
+        }
 
         socket.emit("error", {
             message: error.message,
@@ -117,7 +132,7 @@ export async function deleteRoom(io, socket, data = {}, callback) {
         const serviceCall = await roomService.deleteRoom(userId)
         const { sessionId, groupId } = serviceCall
         const roomSockets = await io.in(sessionId).fetchSockets();
-        
+
         io.to(sessionId).emit("room:ended", {
             groupId,
             sessionId

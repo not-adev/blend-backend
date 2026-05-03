@@ -32,6 +32,7 @@ const sessionSchema = new mongoose.Schema(
 
     currentIndex: {
       type: Number,
+      default : 0 ,
     },
 
     paused: {

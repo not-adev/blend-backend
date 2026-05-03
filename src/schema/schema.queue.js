@@ -16,14 +16,11 @@ const queueSchema = new mongoose.Schema(
   title: String,
 
 
-  thumbnail: String,
+  thumbnailUrl: String,
 
   streamUrl: String,
 
-  addedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
-  },
+  addedBy: String,
 
   position: {
     type: Number
