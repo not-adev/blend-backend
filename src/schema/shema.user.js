@@ -32,7 +32,9 @@ const userSchema = new mongoose.Schema(
     mygroups: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "Group"
-    }]
+    }],
+    currentGroupId: String,
+    currentSessionId: String,
   },
 
   { timestamps: true }

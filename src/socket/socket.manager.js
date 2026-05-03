@@ -14,9 +14,9 @@ export default function registerSocketHandlers(io, socket) {
     await roomController.joinRoom(io, socket, data)
   );
 
-  socket.on("room:leave", async (data) =>
+  socket.on("room:leave", async (data,callback) =>
 
-    await roomController.leaveRoom(io, socket, data)
+    await roomController.leaveRoom(io, socket,callback)
   );
 
   socket.on("room:delete", async (data, callback) => {
@@ -28,10 +28,10 @@ export default function registerSocketHandlers(io, socket) {
   })
 
   socket.on("disconnecting", async (data) => {
-    if (socket.data.admin && socket.data.sessionId) {
-      await deleteRoom(io,socket,data,()=>{});
-      io.to(socket.data.groupId).emit("room:ended");
-    }
+
+    await roomController.leaveRoom(io, socket);
+
+
   });
 
 

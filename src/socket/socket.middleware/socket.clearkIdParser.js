@@ -14,10 +14,14 @@ export async function socketCookieParser(socket, next) {
 
     const userId = payload.sub;
 
-    const mongoId = await getUserIdUsingClearkId(userId);
+    // const mongoId = await getUserIdUsingClearkId(userId);
 
-    socket.data.mongoId = mongoId;
-
+    socket.data.userId = userId;
+    socket.onAny((eventName, ...args) => {
+      console.log(
+        `[Socket Event] user=${userId} socket=${socket.id} event=${eventName}`
+      );
+    });
     next();
   } catch (err) {
     console.log("Socket auth failed:", err.message);

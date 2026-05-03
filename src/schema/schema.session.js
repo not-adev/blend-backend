@@ -10,11 +10,11 @@ const sessionSchema = new mongoose.Schema(
     },
 
     currentSong: {
-      songId: String,
+      songId : String ,
       title: String,
       artist: String,
       streamUrl: String,
-      thumbnail: String
+      thumbnail: String,
     },
     
 

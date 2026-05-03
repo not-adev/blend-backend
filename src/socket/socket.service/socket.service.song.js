@@ -1,31 +1,51 @@
+import mongoose from 'mongoose'
 import { StreamUrl } from '../../services/youtube/youtube.service.streamurl.js'
 import { Queue } from '../../schema/schema.queue.js'
 import { Session } from '../../schema/schema.session.js'
-export async function addSong(title, artist, thumbnail, songId, position, addedBy, sessionId) {
+
+export async function addSong(
+    title,
+    artist,
+    thumbnail,
+    songId,
+    position,
+    addedBy,
+    sessionId
+) {
+    const session = await mongoose.startSession()
+
     try {
+        session.startTransaction()
+
         const youTubeServiceCall = await StreamUrl(songId)
-        const obj = {
+
+        const newQueue = await Queue.create([{
             title,
-            artist,
             songId,
             position,
             addedBy,
             sessionId,
             streamUrl: youTubeServiceCall.streamUrl
-        }
-        const newQueue = new Queue(obj)
-        await newQueue.save()
-        await Session.findByIdAndUpdate(sessionId, {
-            $push: { queue: newQueue._id }
-        })
+        }], { session })
+
+        await Session.findByIdAndUpdate(
+            sessionId,
+            { $push: { queue: newQueue[0]._id } },
+            { session }
+        )
+
+        await session.commitTransaction()
+
         return {
-            message: 'new song aded to queue',
-            title: title,
-            thumbnail: thumbnail
+            message: 'new song added to queue',
+            title,
+            thumbnail
         }
 
     } catch (error) {
-        throw error ;
-
+        await session.abortTransaction()
+        throw error
+    } finally {
+        session.endSession()
     }
 }

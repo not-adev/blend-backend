@@ -15,7 +15,6 @@ const queueSchema = new mongoose.Schema(
 
   title: String,
 
-  artist: String,
 
   thumbnail: String,
 

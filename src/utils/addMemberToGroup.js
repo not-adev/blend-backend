@@ -1,9 +1,9 @@
 import { User } from "../schema/shema.user.js";
 export async function addMemberToGroups(io, socket, data) {
     try {
-        const userId = socket.data.mongoId;
+        const userId = socket.data.userId;
 
-        const user = await User.findById(userId).populate("mygroups").populate('groups');
+        const user = await User.findOne({clerkId :userId}).populate("mygroups").populate('groups');
 
         if (!user) return;
 

@@ -1,7 +1,6 @@
 import { User } from "../../schema/shema.user.js";
 export async function addRecentSongs(userId, songData) {
     try {
-        console.log("called add songs ")
         const user = await User.findOne({ clerkId: userId });
 
         if (!user) {
